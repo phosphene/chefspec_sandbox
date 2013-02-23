@@ -18,7 +18,7 @@ bash 'install_Test::Simple' do
   user 'root'
   group 'root'
   code <<-EOC
-cpanm 'Test::Simple'
+cpanm Test::Simple
 EOC
   action :run  
 end
@@ -28,7 +28,7 @@ bash 'install_DBIx::Safe' do
   user 'root'
   group 'root'
   code <<-EOC
-cpanm 'DBIx::Safe'
+cpanm DBIx::Safe
 EOC
   action :run  
 end
@@ -38,7 +38,7 @@ bash 'install_boolean' do
   user 'root'
   group 'root'
   code <<-EOC
-cpanm 'boolean'
+cpanm boolean
 EOC
   action :run  
 end
