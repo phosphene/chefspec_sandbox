@@ -1,9 +1,8 @@
+include_recipe "bucardo::included_recipe"
+
 package 'git-core' do
   action :install
 end
-
-
-
 
 
 git "checkout-bucardo" do
@@ -11,3 +10,4 @@ git "checkout-bucardo" do
   reference "master"
   destination "/tmp/local"
 end
+

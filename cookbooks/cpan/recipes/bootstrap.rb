@@ -1,5 +1,16 @@
 include_recipe 'cpan'
 
+puts "node is #{node.attributes.inspect}"
+
+ruby_block 'load_cpan_attributes' do
+  block do
+    node.load_attribute_by_short_filename('default', 'cpan')
+  end
+end
+
+resources(:ruby_block => "load_cpan_attributes")
+
+puts "node is #{node.inspect}"
 upgrade_command = 'rm -rf /tmp/cpan-client-download/ && mkdir -p /tmp/cpan-client-download/ '
 upgrade_command << " && cd /tmp/cpan-client-download/ && wget #{node.cpan_client.download_url} "
 upgrade_command << ' && tar -zxf *.tar.gz  && cd *.* '
@@ -21,4 +32,3 @@ node.cpan_client.bootstrap.deps.each  do |m|
         environment({'AUTOMATED_TESTING' => '1'})
     end
 end
-

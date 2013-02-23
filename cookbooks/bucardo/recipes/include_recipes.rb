@@ -1,2 +1,2 @@
+include_recipe "bucardo::included_recipe"
 
-include_recipe "cpan"

@@ -10,4 +10,6 @@ end
 package 'libdbi-perl' do
   action :install
 end
-package 'postgresql-plperl-8.4'
+package 'postgresql-plperl-8.4' do
+  action :install
+end
