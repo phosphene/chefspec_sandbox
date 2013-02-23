@@ -5,26 +5,41 @@ prereqs.each do |p|
 end
 
 bash "install_cpanm" do
+  user 'root'
+  group 'root'
+
   code <<-EOC
 curl -L http://cpanmin.us | perl - --sudo App::cpanminus
 EOC
+  action :run
 end
 
-bash 'Test::Simple' do
+bash 'install_Test::Simple' do
   user 'root'
   group 'root'
-  
+  code <<-EOC
+cpanm 'Test::Simple'
+EOC
+  action :run  
 end
 
 
-bash 'DBIx::Safe' do
+bash 'install_DBIx::Safe' do
   user 'root'
   group 'root'
-  
+  code <<-EOC
+cpanm 'DBIx::Safe'
+EOC
+  action :run  
 end
 
-bash 'boolean' do
+
+bash 'install_boolean' do
   user 'root'
   group 'root'
-  
+  code <<-EOC
+cpanm 'boolean'
+EOC
+  action :run  
 end
+
