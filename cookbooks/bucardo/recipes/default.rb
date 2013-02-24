@@ -1,3 +1,4 @@
+include_recipe "bucardo::packages"
 include_recipe "bucardo::included_recipe"
 
 package 'git-core' do
@@ -10,4 +11,3 @@ git "checkout-bucardo" do
   reference "master"
   destination "/tmp/local"
 end
-
