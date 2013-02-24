@@ -1,0 +1,12 @@
+cookbook "bucardo" do
+
+
+
+end
+
+platform :ubuntu do
+  version "10.04" do
+    box "opscode-ubuntu-10.04-1386"
+    box_url "https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04-i386_chef-10.18.2.box"
+  end
+end
