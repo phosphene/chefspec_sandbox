@@ -11,3 +11,19 @@ git "checkout-bucardo" do
   reference "master"
   destination "/tmp/local"
 end
+
+extract_path = "/tmp/local/bucardo"
+#if { ::File.exists?(extract_path) }
+
+bash 'build_bucardo' do
+  cwd ::File.dirname(extract_path)
+  user 'root'
+  group 'root'
+
+  code <<-EOH
+    perl Makefile.PL
+    make
+    make install
+    EOH
+  action :run
+end
