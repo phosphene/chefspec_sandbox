@@ -9,6 +9,9 @@ directory "/tmp/local/" do
   action :create
 end
 
+
+
+
 git "checkout-bucardo" do
   repository "git://github.com/phosphene/bucardo.git"
   reference "master"
@@ -19,7 +22,7 @@ extract_path = "/tmp/local/bucardo_build"
 #if { ::File.exists?(extract_path) }
 
 bash 'build_bucardo' do
-  cwd ::File.dirname(extract_path)
+  cwd extract_path
   user 'root'
   group 'root'
 
@@ -27,6 +30,18 @@ bash 'build_bucardo' do
     perl Makefile.PL
     make
     make install
+    EOH
+  action :run
+end
+
+
+bash 'install_bucardo' do
+  cwd extract_path
+  user 'root'
+  group 'root'
+
+  code <<-EOH
+    bucardo install --batch
     EOH
   action :run
 end

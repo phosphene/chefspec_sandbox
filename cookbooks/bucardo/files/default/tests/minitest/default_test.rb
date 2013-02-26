@@ -17,7 +17,7 @@ describe_recipe 'bucardo::default' do
     #
     
     it "creates the bucardo build directory" do
-      directory("/tmp/local/bucardo").must_exist
+      directory("/tmp/local/bucardo_build").must_exist
     end
 
     it "ensures that bucardo script is installed" do
