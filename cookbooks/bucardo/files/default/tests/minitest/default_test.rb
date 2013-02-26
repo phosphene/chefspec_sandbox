@@ -20,10 +20,8 @@ describe_recipe 'bucardo::default' do
       directory("/tmp/local/bucardo").must_exist
     end
 
-    # All of the matchers starting with 'must_' also have a negative 'wont_'.
-    # So conversely we can also check that a file does not exist:
-    it "ensures that the foobar file is removed if present" do
-      directory("/tmp/foobar").wont_exist
+    it "ensures that bucardo script is installed do
+      file("/usr/local/bin/bucardo").must_exist
     end
 
   end
