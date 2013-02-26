@@ -34,6 +34,9 @@ bash 'build_bucardo' do
   action :run
 end
 
+user 'bucardo' do
+ action :create
+end
 
 bash 'install_bucardo' do
   user 'postgres'
