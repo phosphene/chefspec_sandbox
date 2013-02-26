@@ -36,9 +36,7 @@ end
 
 
 bash 'install_bucardo' do
-  cwd extract_path
-  user 'root'
-  group 'root'
+  user 'postgres'
 
   code <<-EOH
     bucardo install --batch
