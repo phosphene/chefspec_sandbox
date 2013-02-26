@@ -5,6 +5,9 @@ package 'git-core' do
   action :install
 end
 
+directory "/tmp/local/" do
+  action :create
+end
 
 git "checkout-bucardo" do
   repository "git://github.com/phosphene/bucardo.git"
