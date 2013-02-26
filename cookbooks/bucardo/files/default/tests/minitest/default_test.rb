@@ -20,7 +20,7 @@ describe_recipe 'bucardo::default' do
       directory("/tmp/local/bucardo").must_exist
     end
 
-    it "ensures that bucardo script is installed do
+    it "ensures that bucardo script is installed" do
       file("/usr/local/bin/bucardo").must_exist
     end
 
