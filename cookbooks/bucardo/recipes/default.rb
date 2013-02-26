@@ -9,10 +9,10 @@ end
 git "checkout-bucardo" do
   repository "git://github.com/phosphene/bucardo.git"
   reference "master"
-  destination "/tmp/local"
+  destination "/tmp/local/bucardo_build"
 end
 
-extract_path = "/tmp/local/bucardo"
+extract_path = "/tmp/local/bucardo_build"
 #if { ::File.exists?(extract_path) }
 
 bash 'build_bucardo' do
