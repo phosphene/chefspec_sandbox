@@ -13,17 +13,17 @@ describe_recipe 'bucardo::default' do
 
   describe "dirs and files" do
 
-    # = Testing that a file exists =
+    # = Testing that a file exists
     #
-    
+
     it "creates the bucardo build directory" do
-      directory("/tmp/local/bucardo").must_exist
+      directory("/tmp/local/bucardo_build").must_exist
     end
 
     # All of the matchers starting with 'must_' also have a negative 'wont_'.
     # So conversely we can also check that a file does not exist:
     it "ensures that the foobar file is removed if present" do
-      directory("/tmp/foobar").wont_exist
+      file("/tmp/local/bucardo_build/Makefile.PL").must_exist
     end
 
   end
