@@ -38,6 +38,25 @@ user 'bucardo' do
  action :create
 end
 
+ruby_block "modify pg_conf for bucardo install" do
+  block do
+    require 'chef/util/file_edit'
+    nc = Chef::Util::FileEdit.new("/etc/postgresql/8.4/main/pg_hba.conf")
+    nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      bucardo        trust")
+    nc.write_file
+    Chef::Log.info "Inserted bucardo trust"
+  end
+end
+
+
+service 'postgresql-8.4' do
+  action :restart
+end
+
+
+
+
+
 bash 'install_bucardo' do
   user 'postgres'
 

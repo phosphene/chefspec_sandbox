@@ -7,6 +7,9 @@
 package 'postgresql-8.4' do
   action :install
 end
+
+package 'postgresql-contrib-8.4'
+
 package 'libpq-dev' do
   action :install
 end
