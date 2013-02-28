@@ -1,7 +1,7 @@
+
 cookbook "bucardo" do
-
-
-
+  configuration "default"
+  configuration "test"
 end
 
 platform :ubuntu do
