@@ -19,7 +19,7 @@ git "checkout-bucardo" do
 end
 
 extract_path = "/tmp/local/bucardo_build"
-#if { ::File.exists?(extract_path) }
+bucardo_bin_path "/usr/local/bin/bucardo"
 
 bash 'build_bucardo' do
   cwd extract_path
@@ -32,10 +32,12 @@ bash 'build_bucardo' do
     make install
     EOH
   action :run
+  not_if { ::File.exists?(bucardo_bin_path) }
 end
 
 user 'bucardo' do
  action :create
+
 end
 
 ruby_block "modify pg_conf for bucardo install" do
@@ -45,12 +47,14 @@ ruby_block "modify pg_conf for bucardo install" do
     nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      bucardo        trust")
     nc.write_file
     Chef::Log.info "Inserted bucardo trust"
+    not_if 'psql --list|grep bucardo', :user => 'postgres'
   end
 end
 
 
 service 'postgresql-8.4' do
   action :restart
+  not_if 'psql --list|grep bucardo', :user => 'postgres'
 end
 
 
@@ -64,4 +68,5 @@ bash 'install_bucardo' do
     bucardo install --batch
     EOH
   action :run
+  not_if 'psql --list|grep bucardo', :user => 'postgres'
 end
