@@ -19,7 +19,7 @@ git "checkout-bucardo" do
 end
 
 extract_path = "/tmp/local/bucardo_build"
-bucardo_bin_path "/usr/local/bin/bucardo"
+bucardo_bin_path = "/usr/local/bin/bucardo"
 
 bash 'build_bucardo' do
   cwd extract_path
@@ -36,8 +36,9 @@ bash 'build_bucardo' do
 end
 
 user 'bucardo' do
- action :create
-
+  action :create
+  shell '/bin/bash'
+  home '/home/bucardo'
 end
 
 ruby_block "modify pg_conf for bucardo install" do
