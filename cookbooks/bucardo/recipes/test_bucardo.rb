@@ -45,9 +45,9 @@ rels_name = 'my_rels'
 db_group_name = 'my_group'
 sync_name = 'my_sync'
 
-execute 'alter bucardo password' do
+execute "alter_bucardo_password" do
   user 'postgres'
-  command = %{psql -c "ALTER USER bucardo WITH PASSWORD '<#{master['pass']}>';}
+  command %{psql -c "ALTER USER bucardo WITH PASSWORD '<#{master['pass']}>'"}
   action :run
 end
 
@@ -64,13 +64,13 @@ end
 
 execute  'add tables to bucardo' do
   user 'bucardo'
-  command = %{bucardo add table #{table_name} relgroup=#{rels_name} db=#{dbname}_slave}
+  command %{bucardo add table #{table_name} relgroup=#{rels_name} db=#{dbname}_slave}
   action :run
 end
 
- bash  'create db group' do
+ execute  'create db group' do
    user 'bucardo'
-  command = %{bucardo add dbgroup #{db_group_name} test_slave:target test_master:source}
+  command %{bucardo add dbgroup #{db_group_name} test_slave:target test_master:source}
 
    action :run
  end
@@ -102,6 +102,6 @@ end
 execute  'start bucardo' do
   cwd '/tmp'
   user 'bucardo'
-  command = "bucardo start"
+  command "bucardo start"
   action :run
 end
