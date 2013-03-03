@@ -47,7 +47,7 @@ sync_name = 'my_sync'
 
 execute "alter_bucardo_password" do
   user 'postgres'
-  command %{psql -c "ALTER USER bucardo WITH PASSWORD '<#{master['pass']}>'"}
+  command %{psql -c "ALTER USER bucardo WITH PASSWORD '#{master['pass']}'"}
   action :run
 end
 
@@ -55,8 +55,8 @@ end
 bash  'add dbs to bucardo' do
   user 'bucardo'
   code <<-EOH
-  bucardo add db #{dbname}_master dbname=#{dbname}_master dbuser=#{master['user']} pass=#{master['pass']}
-  bucardo add db #{dbname}_slave dbname=#{dbname}_slave dbuser=#{slave['user']} pass=#{slave['pass']}
+  bucardo add db #{dbname}_master dbname=#{dbname}_master host=#{master['host'] dbuser=#{master['user']}  pass=#{master['pass']}
+  bucardo add db #{dbname}_slave dbname=#{dbname}_slave host=#{master['host'] dbuser=#{slave['user']} pass=#{slave['pass']}
   EOH
   action :run
   not_if 'bucardo list db | grep Database: #{dbname}_master'
