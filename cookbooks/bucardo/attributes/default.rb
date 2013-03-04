@@ -1,5 +1,5 @@
-
 ##install
+default['bucardo']['tmp_local'] = '/tmp/local/'
 default['bucardo']['build_dir'] = '/tmp/local/bucardo_build'
 default['bucardo']['user'] = 'bucardo'
 default['bucardo']['bucardo_repo'] = 'git://github.com/bucardo/bucardo.git'

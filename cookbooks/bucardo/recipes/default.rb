@@ -12,7 +12,7 @@ user "#{node['bucardo']['user']}" do
   supports :manage_home => true
 end
 
-directory "#{node['bucardo']['build_dir']}" do
+directory "#{node['bucardo']['tmp_local']}" do
   user node['bucardo']['user']
   action :create
 end
