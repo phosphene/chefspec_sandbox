@@ -32,13 +32,14 @@ bash 'build_bucardo' do
     make install
     EOH
   action :run
-  not_if { ::File.exists?(bucardo_bin_path) }
+  not_if {File.exists?(bucardo_bin_path) }
 end
 
 user 'bucardo' do
   action :create
   shell '/bin/bash'
   home '/home/bucardo'
+  supports :manage_home => true
 end
 
 ruby_block "modify pg_conf for bucardo install" do
