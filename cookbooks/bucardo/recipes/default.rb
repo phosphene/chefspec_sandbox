@@ -5,6 +5,13 @@ package 'git-core' do
   action :install
 end
 
+user "#{node['bucardo']['user']}" do
+  action :create
+  shell '/bin/bash'
+  home "/home/#{node['bucardo']['user']}"
+  supports :manage_home => true
+end
+
 directory "#{node['bucardo']['build_dir']}" do
   user node['bucardo']['user']
   action :create
@@ -12,7 +19,7 @@ end
 
 
 git "checkout-bucardo" do
-  user node['bucardo']['user']
+  user 'root'
   repository  node['bucardo']['bucardo_repo']
   reference "master"
   destination node['bucardo']['build_dir']
@@ -32,12 +39,6 @@ bash 'build_bucardo' do
   not_if {File.exists?(bucardo_bin_path) }
 end
 
-user "#{node['bucardo']['user']}" do
-  action :create
-  shell '/bin/bash'
-  home "/home/#{node['bucardo']['user']}"
-  supports :manage_home => true
-end
 
 ruby_block "modify pg_conf for bucardo install" do
   block do
