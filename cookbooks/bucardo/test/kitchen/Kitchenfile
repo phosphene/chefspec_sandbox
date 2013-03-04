@@ -2,6 +2,7 @@
 cookbook "bucardo" do
   configuration "default"
   configuration "test_bucardo"
+  configuration "test_operations"
 end
 
 platform :ubuntu do
