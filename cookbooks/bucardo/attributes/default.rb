@@ -13,6 +13,7 @@ default['bucardo']['master']['user'] = 'bucardo'
 #slave
 default['bucardo']['slave']['host'] = 'localhost'
 default['bucardo']['slave']['user'] = 'bucardo'
+default['bucardo']['slave']['ip_address'] = '0.0.0.0'
 
 default['bucardo']['relgroup'] = 'my_rels'
 default['bucardo']['dbgroup'] = 'my_group'
