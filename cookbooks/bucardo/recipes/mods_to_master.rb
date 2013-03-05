@@ -1,5 +1,6 @@
-bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo")
-bucardo_pw = bucardo_creds["#{node['bucardo']['user']}"]
+bucardo_secret = Chef::EncryptedDataBagItem.load_secret("#{node['bucardo']['secretpath']}")
+bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_secret)
+bucardo_pw = bucardo_creds["#{node['bucardo']['master']['user']}"]
 
 
 

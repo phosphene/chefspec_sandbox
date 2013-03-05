@@ -6,7 +6,9 @@ default['bucardo']['bucardo_repo'] = 'git://github.com/bucardo/bucardo.git'
 default['bucardo']['bin_path'] = "/usr/local/bin/bucardo"
 
 ##configure
+#general
 default['bucardo']['dbname'] = 'test'
+default['bucardo']['secretpath] = '/etc/chef/data_bag_key'
 #master
 default['bucardo']['master']['host'] = 'localhost'
 default['bucardo']['master']['user'] = 'bucardo'
