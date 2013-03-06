@@ -2,17 +2,17 @@
 #if { ::File.exists?(extract_path) }
 
 dbname = 'test'
-db_name = 'test'
+
 
 
 bash 'create test dbs' do
   user 'postgres'
 
   code <<-EOH
-    dropdb #{db_name}_master
-    dropdb #{db_name}_slave
-    createdb #{db_name}_master
-    createdb #{db_name}_slave
+    dropdb #{dbname}_master
+    dropdb #{dbname}_slave
+    createdb #{dbname}_master
+    createdb #{dbname}_slave
     EOH
   action :run
 end
@@ -29,7 +29,6 @@ bash 'add test data to test dbs' do
 end
 
 dbname = 'test'
-db_name = 'test'
 master = {'host' => 'localhost',
   'user' => 'bucardo',
   'pass' => 'password'
