@@ -16,4 +16,11 @@ describe 'bucardo::default' do
     chef_run.should include_recipe 'bucardo::included_recipe'
   end
 
+  it 'mods pg_conf' do
+    chef_run = ChefSpec::ChefRunner.new
+    chef_run.node.set['bucardo']['user'] = 'bucardo'
+    chef_run.converge('bucardo::default')
+  end
+
+
 end
