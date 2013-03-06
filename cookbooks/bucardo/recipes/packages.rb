@@ -25,8 +25,6 @@ end
 package 'libdbd-pg-perl' do
   action :install
 end
-p
-
 
 package 'postgresql-plperl-8.4' do
   action :install
