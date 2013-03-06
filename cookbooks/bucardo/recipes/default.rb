@@ -44,17 +44,17 @@ ruby_block "modify pg_conf for bucardo install" do
   block do
     require 'chef/util/file_edit'
     nc = Chef::Util::FileEdit.new("/etc/postgresql/8.4/main/pg_hba.conf")
-    nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      #{['bucardo']['user']}        trust")
+    nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      #{node['bucardo']['slave']['user']}        trust")
     nc.write_file
     Chef::Log.info "Inserted #{node['bucardo']['user']} trust"
-    not_if "psql --list|grep #{node['bucardo']['user']}", :user => 'postgres'
+    not_if "psql -c '\du'|grep #{node['bucardo']['user']}", :user => 'postgres'
   end
 end
 
 
 service 'postgresql-8.4' do
   action :restart
-  not_if "psql --list|grep #{node['bucardo']['user']}", :user => 'postgres'
+  not_if "psql -c '\du'|grep #{node['bucardo']['user']}", :user => 'postgres'
 end
 
 
