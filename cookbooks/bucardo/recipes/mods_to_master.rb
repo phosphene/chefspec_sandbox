@@ -1,7 +1,7 @@
 bucardo_secret = Chef::EncryptedDataBagItem.load_secret("#{node['bucardo']['secretpath']}")
 bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_secret)
-bucardo_pw = bucardo_creds["#{node['bucardo']['master']['user']}"]
-
+bucardo_master_pw = bucardo_creds["#{node['bucardo']['master']['user']}"]
+bucardo_slave_pw = bucardo_creds["#{node['bucardo']['master']['user']}"]
 
 
 
@@ -10,7 +10,7 @@ ruby_block "modify pg_conf for bucardo user" do
   block do
     require 'chef/util/file_edit'
     nc = Chef::Util::FileEdit.new("/etc/postgresql/8.4/main/pg_hba.conf")
-    nc.insert_line_after_match(/local.*?postgres.*ident/, "hostssl    #{node['bucardo']['master']['dbname']}    #{node['bucardo']['user']}   #{node['bucardo']['slave']['ip_address']}     md5")
+    nc.insert_line_after_match(/local.*?postgres.*ident/, "hostssl   all    #{node['bucardo']['user']}   #{node['bucardo']['slave']['ip_address']}  #{node['bucardo']['slave']['subnet_mask']}    md5")
     nc.write_file
     Chef::Log.info "Inserted #{node['bucardo']['user']} md5 for #{node['bucardo']['slave']['ip_address']}"
     not_if "psql -c '\du'|grep #{node['bucardo']['user']}", :user => 'postgres'

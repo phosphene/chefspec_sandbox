@@ -1,28 +1,19 @@
-#extract_path = "/tmp/local/bucardo_build"
-#if { ::File.exists?(extract_path) }
+bucardo_secret = Chef::EncryptedDataBagItem.load_secret("#{node['bucardo']['secretpath']}")
+bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_secret)
 
-dbname = 'sequel'
-db_name = 'sequel'
+dbname = node.bucardo.dbname
+master = node.bucardo.master
+slave = node.bucardo.slave
+
+master['pass'] = bucardo_creds["#{master['user']}"]
+slave['pass'] = bucardo_creds["#{slave['user']}"]
 
 
 
 
-dbname = 'sequel'
-db_name = 'sequel'
-master = {'host' => 'test',
-  'user' => 'bucardo',
-  'pass' => 'none'
-}
-
-slave = {'host' => 'localhost',
-  'user' => 'bucardo',
-  'pass' => 'none'
-}
-
-excluded_tables_array = %w(public.sessions public.accts_countries public.schema_info public.accts_users)
-rels_name = 'my_rels'
-db_group_name = 'my_group'
-sync_name = 'my_sync'
+rels_name = node.bucardo.rels_name
+db_group_name = node.bucardo.db_group_name
+sync_name = node.bucardo.sync_name
 
 execute "alter_bucardo_password" do
   user 'postgres'
@@ -32,9 +23,9 @@ end
 
 execute 'create local slave db' do
   user 'postgres'
-  command %| createdb #{db_name} |
+  command %| createdb #{dbname} |
   action :run
-  not_if "psql --list|grep #{db_name}", :user => 'postgres'
+  not_if "psql --list|grep #{dbname}", :user => 'postgres'
 end
 
 
@@ -47,7 +38,7 @@ end
 
 execute 'append to pgpass file' do
   user 'postgres'
-  command %| echo "#{master['host']}:*:#{db_name}:#{master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
+  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
   action :run
 
 end
@@ -58,7 +49,7 @@ end
 execute "dump master schema and load to local slave" do
   cwd '/var/lib/postgresql'
   user 'postgres'
-  command %$ pg_dump -h #{master['host']} -U bucardo --schema-only #{dbname} | psql  -d #{dbname} $
+  command %$ pg_dump -h #{node.bucardo.master['host']} -U bucardo --schema-only #{dbname} | psql  -d #{dbname} $
   action :run
 end
 
@@ -130,7 +121,6 @@ directory '/var/log/bucardo' do
   user 'bucardo'
   group 'bucardo'
   action :create
-
 end
 
 
