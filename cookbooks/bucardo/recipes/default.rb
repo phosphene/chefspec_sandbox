@@ -36,7 +36,7 @@ bash 'build_bucardo' do
     make install
     EOH
   action :run
-  not_if {File.exists?(bucardo_bin_path) }
+  not_if "File.exists?(node.['bucardo']['bucardo_bin_path'])"
 end
 
 
