@@ -40,7 +40,7 @@ execute 'append to pgpass file' do
   user 'postgres'
   command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
   action :run
-
+  not_if "File.exists? '/var/lib/postgresql/.pgpass'" 
 end
 
 
