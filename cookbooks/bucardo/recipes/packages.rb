@@ -4,28 +4,17 @@
 #
 
 #
-package 'postgresql-8.4' do
-  action :install
-end
 
+package 'postgresql-8.4' 
+  
 package 'postgresql-contrib-8.4'
 
-package 'libpq-dev' do
-  action :install
-end
-package 'libpq5' do
-  action :install
-end
-package 'libc6' do
-  action :install
-end
-package 'libdbi-perl' do
-  action :install
-end
-package 'libdbd-pg-perl' do
-  action :install
-end
+package 'libpq-dev'
+package 'libpq5'
+package 'libc6' 
+package 'libdbi-perl' 
+package 'libdbd-pg-perl' 
 
-package 'postgresql-plperl-8.4' do
-  action :install
-end
+package 'postgresql-plperl-8.4'
+
+
