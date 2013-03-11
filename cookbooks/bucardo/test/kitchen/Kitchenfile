@@ -4,6 +4,7 @@ cookbook "bucardo" do
   configuration "test_bucardo"
   configuration "test_operations"
   configuration  "mods_to_master"
+  configuration  "slave_setup"
 end
 
 platform :ubuntu do
