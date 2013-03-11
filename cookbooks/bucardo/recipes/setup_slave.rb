@@ -9,13 +9,10 @@ master = node.bucardo.master
 slave = node.bucardo.slave
 master['pass'] = bucardo_creds["#{master['user']}"]
 slave['pass'] = bucardo_creds["#{slave['user']}"]
-#rels_name = node.bucardo.rels_name
-#db_group_name = node.bucardo.db_group_name
-#sync_name = node.bucardo.sync_name
+rels_name = node.bucardo.rels_name
+db_group_name = node.bucardo.db_group_name
+sync_name = node.bucardo.sync_name
 
-
-
-test_this_method()
 
 db_dump = get_remote_db_backup(aws_config)
 
