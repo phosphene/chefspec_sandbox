@@ -4,7 +4,7 @@ require 'minitest/spec'
 # Spec:: default
 #
 #
-describe_recipe 'bucardo::slave_install_bucardo' do
+describe_recipe 'bucardo::install_bucardo_mcp' do
 
   #todo move to helper
   include MiniTest::Chef::Assertions

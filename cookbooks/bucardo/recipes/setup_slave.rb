@@ -1,5 +1,3 @@
-include_recipe "bucardo::util_recipe"
-
 bucardo_secret = Chef::EncryptedDataBagItem.load_secret("#{node['bucardo']['secretpath']}")
 bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_secret)
 
@@ -56,7 +54,7 @@ end
 execute  'add master db to bucardo' do
   user 'bucardo'
   command %| bucardo add db #{dbname}_master dbname=#{dbname} host=#{master['host']} dbuser=#{master['user']}  pass=#{master['pass']} |
-  action :run
+    action :run
 end
 
 
@@ -75,9 +73,9 @@ end
 excluded_tables_array.each do |val|
 
   execute "remove excluded #{val} table with no primary key" do
-   user 'bucardo'
-   command %|bucardo remove table #{val} |
-   action :run
+    user 'bucardo'
+    command %|bucardo remove table #{val} |
+    action :run
   end
 
 end
@@ -86,27 +84,48 @@ end
 
 execute  'add sequences to bucardo relgroup' do
   user 'bucardo'
-  command %{bucardo add sequence all relgroup=#{rels_name} db=#{dbname}_master}
+  command %|bucardo add sequence all relgroup=#{rels_name} db=#{dbname}_master |
   action :run
 end
 
- execute  'create db group' do
-   user 'bucardo'
-   command %|bucardo add dbgroup #{db_group_name} #{dbname}_slave:target #{dbname}_master:source|
-   action :run
- end
+execute  'create db group' do
+  user 'bucardo'
+  command %|bucardo add dbgroup #{db_group_name} #{dbname}_slave:target #{dbname}_master:source|
+    action :run
+end
 
 
 execute  'create sync' do
   user 'bucardo'
-  command %| bucardo add sync #{sync_name} relgroup=#{rels_name} dbs=#{db_group_name}|
+  command %| bucardo add sync #{sync_name} relgroup=#{rels_name} dbs=#{db_group_name} autokick=0|
+    action :run
+end
+
+execute 'dump data from master to slave' do
+  user 'postgres'
+  command %{ pg_dump -U #{master['user']} -h #{master['host']} --data-only -N bucardo #{dbname} |
+             psql -U #{slave['user']} -h #{slave['host']} -d #{dbname} }
   action :run
+end
+
+
+execute 'update sync' do
+  user 'bucardo'
+  command %| bucardo update sync #{sync_name} autokick=1|
+    action :run
+end
+
+
+execute 'bucardo reload config' do
+  user 'bucardo'
+  command %| bucardo reload config|
+    action :run
 end
 
 execute  'activate sync' do
   user 'bucardo'
   command %| bucardo activate sync #{sync_name}|
-  action :run
+    action :run
 end
 
 
@@ -122,7 +141,6 @@ directory '/var/log/bucardo' do
   group 'bucardo'
   action :create
 end
-
 
 
 execute  'start bucardo' do
