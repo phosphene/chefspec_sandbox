@@ -44,7 +44,7 @@ ruby_block "modify pg_conf for bucardo install" do
   block do
     require 'chef/util/file_edit'
     nc = Chef::Util::FileEdit.new("/etc/postgresql/8.4/main/pg_hba.conf")
-    nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      #{node['bucardo']['slave']['user']}        trust")
+    nc.insert_line_after_match(/local.*?postgres.*ident/, "local   all      #{node['bucardo']['user']}        trust")
     nc.write_file
     Chef::Log.info "Inserted #{node['bucardo']['user']} trust"
     not_if "psql -c '\\du'|grep #{node['bucardo']['user']}", :user => 'postgres'
@@ -74,7 +74,7 @@ ruby_block "harden pg_conf after bucardo install" do
   block do
     require 'chef/util/file_edit'
     nc = Chef::Util::FileEdit.new("/etc/postgresql/8.4/main/pg_hba.conf")
-    nc.search_file_replace_line(/local.*?#{node['bucardo']['slave']['user']}.*?trust/, "local   all      #{node['bucardo']['slave']['user']}        ident")
+    nc.search_file_replace_line(/local.*?#{node['bucardo']['user']}.*?trust/, "local   all      #{node['bucardo']['user']}        ident")
     nc.write_file
     Chef::Log.info "replaced #{node['bucardo']['user']} ident"
     only_if "psql -c '\\du'|grep #{node['bucardo']['user']}", :user => 'postgres'
