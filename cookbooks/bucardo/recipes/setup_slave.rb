@@ -14,14 +14,6 @@ db_group_name = node.bucardo.db_group_name
 sync_name = node.bucardo.sync_name
 
 
-db_dump = get_remote_db_backup(aws_config)
-
-remote_file "#{Chef::Config[:file_cache_path]}/#{db_dump.key}" do
-  source "#{db_dump.url}"
-  action :create_if_missing
-end
-
-
 
 execute "alter_bucardo_password" do
   user 'postgres'
@@ -37,6 +29,27 @@ execute 'create local slave db' do
 end
 
 
+
+file '/var/lib/postgresql/.pgpass' do
+  owner 'postgres'
+  mode 0600
+  action :create
+end
+
+execute 'append to pgpass file' do
+  user 'postgres'
+  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
+  action :run
+  not_if "File.exists? '/var/lib/postgresql/.pgpass'" 
+end
+
+
+execute "dump master schema and load to local slave" do
+  cwd '/var/lib/postgresql'
+  user 'postgres'
+  command %$ pg_dump -h #{node.bucardo.master['host']} -U bucardo --schema-only #{dbname} | psql  -d #{dbname} $
+  action :run
+end
 
 
 
