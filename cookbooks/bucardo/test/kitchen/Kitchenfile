@@ -1,6 +1,6 @@
 
 cookbook "bucardo" do
-  configuration "slave_install_bucardo"
+  configuration "install_bucardo_mcp"
   configuration "test_bucardo"
   configuration "test_operations"
   configuration  "mods_to_master"
