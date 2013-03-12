@@ -1,5 +1,5 @@
 include_recipe "bucardo::packages"
-include_recipe "bucardo::included_recipe"
+include_recipe "bucardo::install_perl_modules"
 
 package 'git-core' do
   action :install
