@@ -5,17 +5,18 @@ bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_
 dbname = node.bucardo.dbname
 master = node.bucardo.master
 slave = node.bucardo.slave
-master['pass'] = bucardo_creds["#{master['user']}"]
-slave['pass'] = bucardo_creds["#{slave['user']}"]
-rels_name = node.bucardo.rels_name
-db_group_name = node.bucardo.db_group_name
+master_pass = bucardo_creds["#{master['user']}"]
+slave_pass = bucardo_creds["#{slave['user']}"]
+rels_name = node.bucardo.relgroup
+db_group_name = node.bucardo.dbgroup
 sync_name = node.bucardo.sync_name
+excluded_tables_array = node.bucardo.excluded_tables_array
 
 
 
 execute "alter_bucardo_password" do
   user 'postgres'
-  command %|psql -c "ALTER USER bucardo WITH PASSWORD '#{slave['pass']}'"|
+  command %|psql -c "ALTER USER bucardo WITH PASSWORD '#{slave_pass}'"|
   action :run
 end
 
@@ -27,40 +28,45 @@ execute 'create local slave db' do
 end
 
 
+execute 'append to pgpass file' do
+  user 'postgres'
+  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master_pass}" >> /var/lib/postgresql/.pgpass |
+  action :run
+  not_if { File.exists? '/var/lib/postgresql/.pgpass' } 
+end
+
+
 
 file '/var/lib/postgresql/.pgpass' do
   owner 'postgres'
-  mode 0600
-  action :create
-end
-
-execute 'append to pgpass file' do
-  user 'postgres'
-  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
-  action :run
-  not_if "File.exists? '/var/lib/postgresql/.pgpass'" 
+  mode "600"
+  
 end
 
 
-execute "dump master schema and load to local slave" do
+bash "dump master schema and load to local slave" do
   cwd '/var/lib/postgresql'
   user 'postgres'
-  command %$ pg_dump -h #{node.bucardo.master['host']} -U bucardo --schema-only #{dbname} | psql  -d #{dbname} $
+  code <<-EOH
+    set -o pipefail
+    pg_dump -h #{node.bucardo.master['host']} -U bucardo --schema-only #{dbname} | psql  -d #{dbname}
+    EOH
   action :run
+  environment 'PGSSLMODE' => 'require'
 end
 
 
 
 execute  'add master db to bucardo' do
   user 'bucardo'
-  command %| bucardo add db #{dbname}_master dbname=#{dbname} host=#{master['host']} dbuser=#{master['user']}  pass=#{master['pass']} |
+  command %| bucardo add db #{dbname}_master dbname=#{dbname} host=#{master['host']} dbuser=#{master['user']}  pass=#{master_pass} |
     action :run
 end
 
 
 execute  'add slave db to bucardo' do
   user 'bucardo'
-  command %|bucardo add db #{dbname}_slave dbname=#{dbname} host=#{slave['host']} dbuser=#{slave['user']} pass=#{slave['pass']} |
+  command %|bucardo add db #{dbname}_slave dbname=#{dbname} host=#{slave['host']} dbuser=#{slave['user']} pass=#{slave_pass} |
   action :run
 end
 
@@ -101,31 +107,11 @@ execute  'create sync' do
     action :run
 end
 
-execute 'dump data from master to slave' do
-  user 'postgres'
-  command %{ pg_dump -U #{master['user']} -h #{master['host']} --data-only -N bucardo #{dbname} |
-             psql -U #{slave['user']} -h #{slave['host']} -d #{dbname} }
-  action :run
-end
-
-
-execute 'update sync' do
-  user 'bucardo'
-  command %| bucardo update sync #{sync_name} autokick=1|
-    action :run
-end
-
-
-execute 'bucardo reload config' do
-  user 'bucardo'
-  command %| bucardo reload config|
-    action :run
-end
 
 execute  'activate sync' do
   user 'bucardo'
   command %| bucardo activate sync #{sync_name}|
-    action :run
+  action :run
 end
 
 
@@ -147,5 +133,42 @@ execute  'start bucardo' do
   cwd '/tmp'
   user 'bucardo'
   command 'bucardo start'
+  action :run
+end
+
+
+# bash 'dump data from master to slave' do
+#   cwd '/var/lib/postgresql'
+#   user 'postgres'
+#   code <<-EOH
+#    set -o pipefail
+#    pg_dump -U #{master['user']} -h #{master['host']} --data-only -N bucardo #{dbname} | \
+#    psql -U #{slave['user']} -h #{slave['host']} -d #{dbname} }
+#    EOH
+#   action :run
+#   environment 'PGSSLMODE' => 'require'
+# end
+
+
+execute 'update sync' do
+  user 'bucardo'
+  command %| bucardo update sync #{sync_name} autokick=1|
+  action :run
+end
+
+
+execute  'activate sync' do
+  user 'bucardo'
+  command %| bucardo activate sync #{sync_name}|
+  action :run
+end
+
+
+
+
+
+execute 'bucardo reload config' do
+  user 'bucardo'
+  command %| bucardo reload config|
   action :run
 end

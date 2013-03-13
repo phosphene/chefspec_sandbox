@@ -1,10 +1,13 @@
 
+
 cookbook "bucardo" do
   configuration "install_bucardo_mcp"
   configuration "test_bucardo"
   configuration "test_operations"
   configuration  "mods_to_master"
   configuration  "setup_slave"
+  configuration  "setup_slave_test"
+  memory '1024'
 end
 
 platform :ubuntu do
@@ -12,4 +15,6 @@ platform :ubuntu do
     box "opscode-ubuntu-10.04-1386"
     box_url "https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04-i386_chef-10.18.2.box"
   end
+ 
 end
+

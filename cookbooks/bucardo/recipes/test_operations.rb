@@ -1,19 +1,22 @@
 bucardo_secret = Chef::EncryptedDataBagItem.load_secret("#{node['bucardo']['secretpath']}")
 bucardo_creds = Chef::EncryptedDataBagItem.load("passwords", "bucardo", bucardo_secret)
 
+
+
+#namespace to local
 dbname = node.bucardo.dbname
 master = node.bucardo.master
 slave = node.bucardo.slave
 
-master['pass'] = bucardo_creds["#{master['user']}"]
-slave['pass'] = bucardo_creds["#{slave['user']}"]
-
-
-
-
-rels_name = node.bucardo.rels_name
-db_group_name = node.bucardo.db_group_name
+master_pass = bucardo_creds["#{master['user']}"]
+slave_pass = bucardo_creds["#{slave['user']}"]
+rels_name = node.bucardo.relgroup
+db_group_name = node.bucardo.dbgroup
 sync_name = node.bucardo.sync_name
+excluded_tables_array = node.bucardo.excluded_tables_array
+
+
+
 
 execute "alter_bucardo_password" do
   user 'postgres'
@@ -38,7 +41,7 @@ end
 
 execute 'append to pgpass file' do
   user 'postgres'
-  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master['pass']}" >> /var/lib/postgresql/.pgpass |
+  command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master_pass}" >> /var/lib/postgresql/.pgpass |
   action :run
   not_if "File.exists? '/var/lib/postgresql/.pgpass'" 
 end

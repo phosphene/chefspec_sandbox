@@ -10,7 +10,9 @@ default['bucardo']['bin_path'] = "/usr/local/bin/bucardo"
 default['bucardo']['dbname'] = 'test'
 default['bucardo']['secretpath'] = '/etc/chef/data_bag_key'
 #master
-default['bucardo']['master']['host'] = 'localhost'
+default['bucardo']['master']['host'] = 'some.remote.com'
+
+
 default['bucardo']['master']['user'] = 'bucardo'
 #slave
 default['bucardo']['slave']['host'] = 'localhost'
@@ -20,4 +22,5 @@ default['bucardo']['slave']['subnet_mask'] = '255.255.255.0'
 
 default['bucardo']['relgroup'] = 'my_rels'
 default['bucardo']['dbgroup'] = 'my_group'
-default['bucardo']['sync'] = 'my_sync'
+default['bucardo']['sync_name'] = 'my_sync'
+default['bucardo']['excluded_tables_array'] = []
