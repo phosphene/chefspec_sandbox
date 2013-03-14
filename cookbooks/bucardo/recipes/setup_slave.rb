@@ -103,7 +103,7 @@ end
 
 execute  'create sync' do
   user 'bucardo'
-  command %| bucardo add sync #{sync_name} relgroup=#{rels_name} dbs=#{db_group_name} autokick=0|
+  command %| bucardo add sync #{sync_name} relgroup=#{rels_name} dbs=#{db_group_name} onetimecopy=2|
     action :run
 end
 
@@ -130,7 +130,7 @@ end
 
 
 execute  'start bucardo' do
-  cwd '/tmp'
+  cwd '/var/run/bucardo'
   user 'bucardo'
   command 'bucardo start'
   action :run
@@ -143,7 +143,7 @@ end
 #   code <<-EOH
 #    set -o pipefail
 #    pg_dump -U #{master['user']} -h #{master['host']} --data-only -N bucardo #{dbname} | \
-#    psql -U #{slave['user']} -h #{slave['host']} -d #{dbname} }
+#    psql -d #{dbname}
 #    EOH
 #   action :run
 #   environment 'PGSSLMODE' => 'require'
@@ -156,19 +156,15 @@ execute 'update sync' do
   action :run
 end
 
-
-execute  'activate sync' do
+execute 'bucardo reload sync' do
   user 'bucardo'
-  command %| bucardo activate sync #{sync_name}|
+  command %| bucardo reload sync #{sync_name}|
   action :run
 end
 
 
-
-
-
 execute 'bucardo reload sync' do
   user 'bucardo'
-  command %| bucardo reload sync #{sync_name}|
+  command %| bucardo status sync #{sync_name}|
   action :run
 end
