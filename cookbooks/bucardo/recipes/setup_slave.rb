@@ -32,7 +32,7 @@ execute 'append to pgpass file' do
   user 'postgres'
   command %| echo "#{node.bucardo.master['host']}:*:#{node.bucardo.dbname}:#{node.bucardo.master['user']}:#{master_pass}" >> /var/lib/postgresql/.pgpass |
   action :run
-  not_if { File.exists? '/var/lib/postgresql/.pgpass' } 
+  not_if { File.exists? '/var/lib/postgresql/.pgpass' }
 end
 
 
@@ -40,7 +40,7 @@ end
 file '/var/lib/postgresql/.pgpass' do
   owner 'postgres'
   mode "600"
-  
+
 end
 
 
@@ -167,8 +167,8 @@ end
 
 
 
-execute 'bucardo reload config' do
+execute 'bucardo reload sync' do
   user 'bucardo'
-  command %| bucardo reload config|
+  command %| bucardo reload sync #{sync_name}|
   action :run
 end
