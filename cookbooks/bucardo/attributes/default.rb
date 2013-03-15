@@ -21,7 +21,16 @@ default['bucardo']['slave']['ip_address'] = '0.0.0.0'
 default['bucardo']['slave']['subnet_mask'] = '255.255.255.0'
 default['bucardo']['slave']['superuser'] = 'postgres'
 
-default['bucardo']['relgroup'] = 'my_rels'
-default['bucardo']['dbgroup'] = 'my_group'
-default['bucardo']['sync_name'] = 'my_sync'
-default['bucardo']['excluded_tables_array'] = []
+default['bucardo']['pushdelta_relgroup'] = 'my_pushdelta_rels'
+default['bucardo']['fullcopy_relgroup'] = 'my_fullcopy_rels'
+
+
+default['bucardo']['pushdelta_dbgroup'] = 'my_pushdelta_dbgroup'
+default['bucardo']['fullcopy_dbgroup'] = 'my_fullcopy_dbgroup'
+
+
+
+default['bucardo']['fullcopy_sync'] = 'my_fullcopy_sync'
+default['bucardo']['pushdelta_sync'] = 'my_pushdelta_sync'
+default['bucardo']['excluded_delta_tables_array'] = []
+default['bucardo']['include_fullcopy_tables_array'] = []

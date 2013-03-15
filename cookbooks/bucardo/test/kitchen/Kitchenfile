@@ -7,6 +7,9 @@ cookbook "bucardo" do
   configuration  "mods_to_master"
   configuration  "setup_slave"
   configuration  "setup_slave_test"
+  configuration  "post_setup_slave_test"
+    configuration  "setup_fullcopy_slave_sync_test"
+  
   memory '1024'
 end
 
