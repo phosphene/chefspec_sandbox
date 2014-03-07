@@ -14,7 +14,7 @@ describe 'bucardo::default' do
 
   it 'includes includedrecipe' do
     chef_run.should include_recipe 'bucardo::included_recipe'
-    chef_run.should include_recipe 'bucardo::another_included_recipe'
+  
   end
 
   it 'mods pg_conf' do
