@@ -1,5 +1,5 @@
-# A sample Gemfile
-source "http://rubygems.org"
+#
+source :rubygems
 
 gem "chef"
 gem "chefspec", git: 'git://github.com/acrmp/chefspec.git'
